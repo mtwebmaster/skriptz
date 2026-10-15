@@ -1,1 +1,328 @@
 
+# Ansible Control Center (ACC)
+
+**A self-hosted infrastructure management, monitoring, and Kubernetes operations platform.**
+
+Ansible Control Center (ACC) is a Linux-based administration platform designed to simplify the management of multiple servers and Kubernetes clusters from a single terminal interface.
+
+Built around Ansible, Python, SSH, systemd, and MicroK8s, ACC provides centralized server administration, infrastructure health monitoring, high-availability membership verification, backup visibility, and controlled system maintenance.
+
+The project focuses on practical infrastructure management using open-source technologies, without requiring commercial monitoring platforms or cloud-based management services.
+
+**Project Status:** Active Development  
+**Current Platform:** ACC v6.3.0-dev4 terminal interface with v6.2 management components  
+**License:** To be determined
+
+---
+
+## Features
+
+### Centralized Linux Management
+
+- Manage multiple Linux servers through Ansible.
+- Perform SSH connectivity and system health checks.
+- Execute administrative commands remotely.
+- Inspect system information and resource utilization.
+- Perform controlled operating system package upgrades.
+- Support asynchronous operations for long-running maintenance tasks.
+
+### Interactive Terminal Dashboard
+
+ACC includes an interactive terminal user interface (TUI) designed to provide centralized visibility into managed infrastructure.
+
+Dashboard capabilities include:
+
+- Host availability and connectivity status.
+- CPU and memory utilization.
+- Disk usage and system temperature.
+- Pending package updates.
+- Reboot requirements.
+- Kubernetes cluster health.
+- Active infrastructure alerts.
+- Backup status.
+
+Both an interactive dashboard and a classic management interface are available.
+
+### Automated Infrastructure Monitoring
+
+ACC uses a lightweight monitoring architecture with scheduled systemd collection jobs.
+
+Monitored information includes:
+
+- Processor utilization
+- Memory utilization
+- Disk capacity
+- Hardware temperatures
+- System uptime
+- Pending Ubuntu package upgrades
+- Reboot requirements
+- Node availability
+
+Telemetry is collected into a local SQLite database for historical storage and future reporting.
+
+### Secure Remote Monitoring
+
+A dedicated restricted monitoring account provides system telemetry through SSH.
+
+The monitoring architecture supports:
+
+- SSH key authentication.
+- Restricted monitoring commands.
+- Separation of administrative and monitoring credentials.
+- Read-only system telemetry collection.
+- Centralized monitoring without general-purpose monitoring sudo access.
+
+### MicroK8s Kubernetes Integration
+
+ACC provides operational visibility into a MicroK8s Kubernetes cluster.
+
+Current capabilities include:
+
+- Kubernetes node readiness checks.
+- Pod health and status reporting.
+- Kubernetes API availability checks.
+- Cluster networking visibility.
+- Control-plane health inspection.
+- Access to Kubernetes events.
+
+The reference environment uses MicroK8s v1.35.6 with Calico networking and containerd.
+
+### High-Availability Monitoring
+
+ACC supports monitoring a three-master MicroK8s control plane.
+
+The HA membership checker verifies that:
+
+- MicroK8s is running on the expected masters.
+- High availability is enabled.
+- The expected dqlite voters are reported.
+- Master nodes agree on HA membership.
+
+**Important:** Membership agreement does not independently prove live dqlite consensus or successful failover. Those require additional tests.
+
+### Backup Monitoring
+
+ACC integrates off-node MicroK8s backup reporting.
+
+Capabilities include:
+
+- Scheduled backup operations.
+- Backup archive integrity checks.
+- Backup status reporting.
+- Backup age visibility.
+- Integration with the infrastructure dashboard.
+
+Backup availability and archive integrity do not guarantee recoverability. Isolated restoration testing is a planned improvement.
+
+### Controlled System Maintenance
+
+ACC supports sequential Ubuntu maintenance using Ansible.
+
+The maintenance workflow can include:
+
+1. Pre-upgrade system checks.
+2. Package upgrade simulation.
+3. Control-plane HA verification.
+4. One-node-at-a-time upgrades.
+5. Asynchronous execution.
+6. Post-upgrade package integrity checks.
+7. Kubernetes health validation.
+8. Final cluster-wide verification.
+
+This approach is intended to reduce operational risk when updating Kubernetes infrastructure.
+
+---
+
+## Architecture
+
+```text
+              Fedora Linux
+          +--------------------+
+          | Ansible Control    |
+          | Center (ACC)       |
+          |                    |
+          | Terminal Dashboard |
+          | Ansible Controller |
+          | Monitoring Engine  |
+          | SQLite Telemetry   |
+          | Backup Reporting   |
+          +---------+----------+
+                    |
+               SSH / Ansible
+                    |
+       +------------+------------+
+       |            |            |
+    node1        node2        node6
+   HA Master    HA Master    HA Master
+       |            |            |
+       +------------+------------+
+                    |
+             MicroK8s Cluster
+                    |
+             +------+------+
+             |             |
+           node4         node5
+           Worker        Worker
+```
+
+The controller manages infrastructure remotely. Monitoring data and operational status are gathered from the managed nodes.
+
+---
+
+## Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Fedora Linux | Management controller |
+| Ubuntu Server | Managed infrastructure nodes |
+| Ansible | Remote administration and automation |
+| Python | ACC management and monitoring tools |
+| SSH | Secure remote connectivity |
+| MicroK8s | Kubernetes orchestration |
+| Kubernetes | Container infrastructure management |
+| SQLite | Historical telemetry storage |
+| systemd | Scheduled monitoring and services |
+| Calico | Kubernetes networking |
+| containerd | Container runtime |
+
+---
+
+## Quick Start
+
+ACC currently represents a working deployment and an actively developed management platform.
+
+A public, reproducible installation procedure is still being prepared. Installation requirements, dependencies, example inventory files, and supported configuration options will be published as the project is packaged for distribution.
+
+### Existing Deployment Commands
+
+Launch the main interface:
+
+```bash
+ansible-menu
+```
+
+Launch the classic management interface:
+
+```bash
+ansible-menu-classic
+```
+
+Display a status summary:
+
+```bash
+ansible-menu --status
+```
+
+View infrastructure alerts:
+
+```bash
+ansible-menu --alerts
+```
+
+Display host details:
+
+```bash
+ansible-menu --details
+```
+
+Check the monitoring timer:
+
+```bash
+systemctl --user status acc-monitor.timer
+```
+
+These commands are available in the configured ACC deployment; they are not yet a complete installation guide for a new system.
+
+---
+
+## Example Deployment
+
+The current reference deployment consists of:
+
+- 1 Fedora-based management controller.
+- 5 Ubuntu Server nodes.
+- 3 MicroK8s high-availability control-plane nodes.
+- 2 MicroK8s worker nodes.
+- Centralized monitoring and administration.
+- Off-node Kubernetes control-plane backup storage.
+
+The deployment has been verified with five Kubernetes nodes Ready, seven Kubernetes system pods healthy, and consistent three-master HA membership.
+
+---
+
+## Security Considerations
+
+ACC is intended for trusted administrative environments.
+
+Recommended deployment practices include:
+
+- Use dedicated SSH keys for administration and monitoring.
+- Apply least-privilege access.
+- Protect Ansible credentials and privilege-escalation secrets.
+- Restrict network access to management services.
+- Avoid publishing production IP addresses, credentials, SSH keys, and inventory secrets.
+- Test administrative changes in a controlled environment before production use.
+
+Public installation scripts and security controls should be reviewed before wider deployment.
+
+---
+
+## Development Roadmap
+
+### Current Capabilities
+
+- [x] Centralized Ansible management
+- [x] Interactive terminal dashboard
+- [x] Classic management menu
+- [x] Automated system telemetry collection
+- [x] SQLite monitoring storage
+- [x] Restricted SSH monitoring account
+- [x] Kubernetes health reporting
+- [x] Three-master HA membership checker
+- [x] Off-node backup reporting
+- [x] Controlled Ubuntu package maintenance
+
+### Planned Improvements
+
+- [ ] Reproducible public installation process
+- [ ] Backup restoration testing workflow
+- [ ] Independent HA consensus verification
+- [ ] Controlled Kubernetes failover testing
+- [ ] Automated rolling-maintenance orchestration
+- [ ] External notifications and alerts
+- [ ] Historical performance reporting
+- [ ] Expanded Kubernetes application management
+- [ ] Public documentation and configuration examples
+
+---
+
+## Project Philosophy
+
+Ansible Control Center is designed around four principles:
+
+**Visibility:** Understand the health of your infrastructure from one place.
+
+**Control:** Manage Linux servers without relying on multiple disconnected tools.
+
+**Reliability:** Favor incremental, verifiable system changes over uncontrolled automation.
+
+**Ownership:** Keep infrastructure management, telemetry, and operational tooling self-hosted wherever practical.
+
+---
+
+## Author
+
+**Jeff Swenson**  
+Systems Administration • Linux Infrastructure • Cybersecurity • Automation
+
+Developed with assistance from ChatGPT / OpenAI GPT-6.
+
+---
+
+## License
+
+A project license has not yet been selected. Until a license is published, no general permission to reuse, modify, or redistribute the source code is granted.
+
+---
+
+*Ansible Control Center — Centralized management. Practical automation. Infrastructure visibility.*
