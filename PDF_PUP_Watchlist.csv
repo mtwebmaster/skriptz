@@ -1,0 +1,29 @@
+Name,MatchRegex,Category,DefaultAction,Notes
+OneStart,(?i)^OneStart(?:\.ai)?(?:[ ._-]|$),Browser-PUP,CleanupCandidate,OneStart browser and associated updater; explicit remediation eligible
+OneBrowser,(?i)^(?:OneBrowser|OneBUpdate|OSBrowser)(?:[ ._-]|$),Browser-PUP,CleanupCandidate,OneBrowser and OneBUpdate; explicit remediation eligible
+OneLaunch,(?i)^OneLaunch(?:\.ai)?(?:[ ._-]|$),Other-browser,ReviewOnly,Separate application; not part of automatic removal
+GooPDF,(?i)^GooPDF(?:[ ._-]|$),Observed-PDF,ReviewOnly,Seen in supplied endpoint file list; association not established
+OneStart PDF Editor,(?i)^(?:PDF OneStart|OneStart PDF Editor)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Reported PDF-related installer branding
+AppSuite PDF Editor,(?i)^AppSuite PDF Editor(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch; name alone is not proof of compromise
+PDF ProStart,(?i)^PDF ProStart(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+StartPDF Pro,(?i)^StartPDF Pro(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDF-Kiosk,(?i)^(?:PDF-Kiosk|PDFKiosk Pro|KioskPDF)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDF ForgePro,(?i)^(?:PDF ForgePro|ForgePDF)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Not the legitimate PDFCreator/PDFforge by default
+PDFMaximizer,(?i)^(?:PDFMaximizer|MaxPDF)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+EZ-PDF Editor,(?i)^(?:EZ-PDF Editor|EZPDF)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDFFixer,(?i)^PDFFixer(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Generic name; requires corroboration
+PDFEnhancer,(?i)^(?:PDFEnhancer|PDFEnhance Pro)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Generic name; requires corroboration
+PDFQuickTools,(?i)^PDFQuickTools(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDFFastEditor,(?i)^PDFFastEditor(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDF Reader Pro 2025,(?i)^PDF Reader Pro 2025(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Name can overlap with legitimate software; never remove by name alone
+PDFUtilitySuite,(?i)^(?:PDFUtilitySuite|PDFUtilityPro)(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDFProSuite,(?i)^PDFProSuite(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDFEditPro,(?i)^PDFEditPro(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDFOpenSuite,(?i)^PDFOpenSuite(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDF PrintMaster,(?i)^PDF PrintMaster(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+PDFToolsHub,(?i)^PDFToolsHub(?:[ ._-]|$),PDF-campaign-watch,ReviewOnly,Campaign watch
+ManualFinder,(?i)^ManualFinder(?:[ ._-]|$),Manual-campaign-watch,ReviewOnly,Reported campaign-related manual finder
+Manual Reader Pro,(?i)^Manual Reader Pro(?:[ ._-]|$),Manual-campaign-watch,ReviewOnly,Reported campaign-related manual reader
+All Manuals Reader,(?i)^All Manuals Reader(?:[ ._-]|$),Manual-campaign-watch,ReviewOnly,Campaign watch
+Total User Manual,(?i)^Total User Manual(?:[ ._-]|$),Manual-campaign-watch,ReviewOnly,Campaign watch
+Any Product Manual,(?i)^Any Product Manual(?:[ ._-]|$),Manual-campaign-watch,ReviewOnly,Campaign watch
